@@ -4,17 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="54ed8258-0aa9-4718-85c1-51a7bdc76452" name="更改" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/Face.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/faces_database/li_hao.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/faces_database/zhang_wenze.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+    <list default="true" id="54ed8258-0aa9-4718-85c1-51a7bdc76452" name="更改" comment="增加了账号登录管理功能">
+      <change afterPath="$PROJECT_DIR$/.deepface/weights/vgg_face_weights.h5" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Face-Liveness-Detection-master/livenessdetect/models/anandfinal.hdf5" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/anandfinal.hdf5" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/audit_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth_ui.py" beforeDir="false" afterPath="$PROJECT_DIR$/auth_ui.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/db_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/faces_database/ds_model_vggface_detector_opencv_aligned_normalization_base_expand_0.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/faces_database/ds_model_vggface_detector_opencv_aligned_normalization_base_expand_0.pkl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/recognition_ui.py" beforeDir="false" afterPath="$PROJECT_DIR$/recognition_ui.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/users.db" beforeDir="false" afterPath="$PROJECT_DIR$/users.db" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,17 +42,19 @@
     <option name="showLibraryContents" value="true" />
     <option name="sortKey" value="BY_TIME_DESCENDING" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.main.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "D:/SCUT/Face - 副本/faces_database",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/SCUT/co-system/faces_database&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\SCUT\co-system\faces_database" />
+      <recent name="D:\SCUT\co-system\.deepface\weights" />
       <recent name="D:\SCUT\Face - 副本\faces_database" />
       <recent name="D:\SCUT\Face\Face\faces_database" />
     </key>
@@ -75,6 +78,71 @@
       <option name="presentableId" value="Default" />
       <updated>1748875290476</updated>
     </task>
+    <task id="LOCAL-00001" summary="1">
+      <option name="closed" value="true" />
+      <created>1749032588724</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1749032588724</updated>
+    </task>
+    <task id="LOCAL-00002" summary="1">
+      <option name="closed" value="true" />
+      <created>1749032675717</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1749032675717</updated>
+    </task>
+    <task id="LOCAL-00003" summary="1">
+      <option name="closed" value="true" />
+      <created>1749038255108</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1749038255108</updated>
+    </task>
+    <task id="LOCAL-00004" summary="增加了账号登录管理功能">
+      <option name="closed" value="true" />
+      <created>1749217948369</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1749217948369</updated>
+    </task>
+    <task id="LOCAL-00005" summary="增加了账号登录管理功能">
+      <option name="closed" value="true" />
+      <created>1749217978102</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1749217978102</updated>
+    </task>
+    <task id="LOCAL-00006" summary="增加了账号登录管理功能">
+      <option name="closed" value="true" />
+      <created>1749218406901</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1749218406901</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="1" />
+    <MESSAGE value="增加了账号登录管理功能" />
+    <option name="LAST_COMMIT_MESSAGE" value="增加了账号登录管理功能" />
   </component>
 </project>

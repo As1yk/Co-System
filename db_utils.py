@@ -3,67 +3,79 @@
 import sqlite3
 import hashlib
 
-DB_PATH = "users.db"  # SQLite 数据库文件名
+DB_PATH = "users.db"
 
 def get_db_connection():
-    """
-    获取 SQLite 连接，若数据库文件不存在会自动创建。
-    """
-    conn = sqlite3.connect(DB_PATH, check_same_thread=False)
-    return conn
+    return sqlite3.connect(DB_PATH, check_same_thread=False)
 
 def init_user_table():
     """
-    初始化 users 表，若表不存在则创建。
+    初始化 users 表，如果不存在就创建；
+    如果已存在但缺少 is_admin 列，则通过 ALTER TABLE 添加该列并设默认 0。
     """
     conn = get_db_connection()
     cursor = conn.cursor()
+
+    # 1. 如果表不存在，创建时就包含 is_admin 列
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT UNIQUE NOT NULL,
-        password_hash TEXT NOT NULL
+        password_hash TEXT NOT NULL,
+        is_admin INTEGER NOT NULL DEFAULT 0
     );
     """)
+
+    # 2. 检查 users 表中是否已有 is_admin 列
+    cursor.execute("PRAGMA table_info(users);")
+    columns = [row[1] for row in cursor.fetchall()]  # row[1] 是列名
+    if "is_admin" not in columns:
+        # 如果缺少 is_admin，则添加它
+        cursor.execute("ALTER TABLE users ADD COLUMN is_admin INTEGER NOT NULL DEFAULT 0;")
+
     conn.commit()
     conn.close()
 
 def hash_password(password: str) -> str:
-    """
-    对明文密码进行 SHA-256 哈希，返回 64 位十六进制哈希串。
-    """
     return hashlib.sha256(password.encode("utf-8")).hexdigest()
 
-def add_user(username: str, password: str) -> bool:
+def add_user(username: str, password: str, is_admin: bool=False) -> bool:
     """
-    向 users 表插入新用户记录（用户名唯一）。返回 True 表示插入成功，False 表示用户名已存在等异常。
+    向 users 表插入新用户，is_admin 默认 False。
     """
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
         password_hash = hash_password(password)
+        admin_flag = 1 if is_admin else 0
         cursor.execute(
-            "INSERT INTO users (username, password_hash) VALUES (?, ?);",
-            (username, password_hash)
+            "INSERT INTO users (username, password_hash, is_admin) VALUES (?, ?, ?);",
+            (username, password_hash, admin_flag)
         )
         conn.commit()
         return True
     except sqlite3.IntegrityError:
-        # 用户名冲突（已存在）
         return False
     finally:
         conn.close()
 
 def verify_user(username: str, password: str) -> bool:
-    """
-    校验用户名和密码是否匹配。匹配返回 True，否则返回 False。
-    """
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT password_hash FROM users WHERE username = ?;", (username,))
     row = cursor.fetchone()
     conn.close()
     if row:
-        stored_hash = row[0]
-        return stored_hash == hash_password(password)
+        return row[0] == hash_password(password)
     return False
+
+def is_admin_user(username: str) -> bool:
+    """
+    查询指定用户名是否为管理员。
+    """
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT is_admin FROM users WHERE username = ?;", (username,))
+    row = cursor.fetchone()
+    conn.close()
+    return bool(row and row[0] == 1)
