@@ -5,7 +5,10 @@ import numpy as np
 from deepface import DeepFace
 from tensorflow.keras.models import load_model
 from audit_utils import add_audit_log
+from datetime import datetime
 
+FAILED_DIR = os.path.join(os.getcwd(), "failed_faces")
+os.makedirs(FAILED_DIR, exist_ok=True)
 
 def load_liveness_model(path='anandfinal.hdf5'):
     try:
@@ -18,8 +21,10 @@ def load_liveness_model(path='anandfinal.hdf5'):
 
 def do_face_match(username: str, face_cascade) -> bool:
     """
-    采集一帧并用 DeepFace 做一次人脸匹配，返回 True/False。
+    只将摄像头采集到的人脸与 faces_database/{username}.jpg 进行一次 verify。
+    使用 DeepFace.verify 的位置参数，避免使用 img1/img2 关键字。
     """
+    # 1. 读取摄像头一帧
     cap = cv2.VideoCapture(0)
     ret, frame = cap.read()
     cap.release()
@@ -28,6 +33,7 @@ def do_face_match(username: str, face_cascade) -> bool:
         add_audit_log(username, "verify_op", "PASS", "NO_FACE", 0.0)
         return False
 
+    # 2. 探测人脸 ROI
     img = cv2.flip(frame, 1)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     faces = face_cascade.detectMultiScale(gray, 1.1, 5, minSize=(60, 60))
@@ -40,30 +46,41 @@ def do_face_match(username: str, face_cascade) -> bool:
     face_bgr = img[y:y+h, x:x+w]
     face_rgb = cv2.cvtColor(face_bgr, cv2.COLOR_BGR2RGB)
 
-    results = DeepFace.find(
-        face_rgb,
-        db_path=os.path.join(os.getcwd(), "faces_database"),
-        enforce_detection=False,
-        model_name="Facenet"
-    )
-    df = results[0] if isinstance(results, list) else results
-    if df is None or df.empty:
-        st.error("人脸库中未找到匹配")
-        add_audit_log(username, "verify_op", "PASS", "NO_MATCH", 0.0)
+    # 3. 定位当前用户的样本照片
+    db_path = os.path.join(os.getcwd(), "faces_database")
+    identity_img = os.path.join(db_path, f"{username}.jpg")
+    if not os.path.isfile(identity_img):
+        st.error(f"找不到用户 “{username}” 的库照片：{identity_img}")
+        add_audit_log(username, "verify_op", "PASS", "NO_IDENTITY_PHOTO", 0.0)
         return False
 
-    dist_col = [c for c in df.columns if "distance" in c or "cosine" in c][0]
-    best = df.sort_values(by=dist_col).iloc[0]
-    match_name = os.path.splitext(os.path.basename(best["identity"]))[0]
-    score = float(best[dist_col])
-    compare = "MATCH" if match_name == username else "NO_MATCH"
+    # 4. 调用 DeepFace.verify —— 不要使用 img1= 或 img2= 关键字
+    try:
+        result = DeepFace.verify(
+            face_rgb,                   # 第一个位置参数：待比对图（np.ndarray 或路径）
+            identity_img,               # 第二个位置参数：库中图像路径
+            enforce_detection=False,
+            model_name="Facenet"
+        )
+    except Exception as e:
+        st.error(f"人脸比对出错：{e}")
+        add_audit_log(username, "verify_op", "PASS", "ERROR", 0.0)
+        return False
 
-    add_audit_log(username, "verify_op", "PASS", compare, score)
-    if compare == "MATCH":
-        st.success(f"人脸匹配通过：匹配到 {match_name} (得分 {score:.2f})")
+    # 5. 解析结果
+    verified = result.get("verified", False)
+    # DeepFace 返回的距离字段名称各模型可能不同，尝试读取
+    distance = result.get("distance", None) or result.get("cosine", None) or 0.0
+
+    # 6. 记录审计并反馈
+    compare_result = "MATCH" if verified else "NO_MATCH"
+    add_audit_log(username, "verify_op", "PASS", compare_result, float(distance))
+
+    if verified:
+        st.success(f"人脸匹配通过 (距离 {distance:.2f})")
         return True
     else:
-        st.error(f"身份不符：匹配到 {match_name} (得分 {score:.2f})")
+        st.error(f"身份不符：与 `{username}.jpg` 的距离为 {distance:.2f}")
         return False
 
 def verify_user_identity(username: str,
@@ -160,6 +177,18 @@ def verify_user_identity(username: str,
                   score=pass_votes / num_votes)
 
     if liveness_status != "PASS":
+        # 保存最后一帧的 face_resized
+        ts_file = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"{username}_{ts_file}_liveness_fail.jpg"
+        path = os.path.join(FAILED_DIR, filename)
+        # face_resized 必须在这作用域可访问
+        cv2.imwrite(path, cv2.cvtColor(face_resized, cv2.COLOR_RGB2BGR))
+
+        add_audit_log(username, "verify_op",
+                      liveness_status,
+                      "SKIPPED",
+                      score=pass_votes / num_votes,
+                      image_path=path)
         st.error("活体验证未通过，请重试。")
         return False
 

@@ -1,4 +1,6 @@
 import streamlit as st
+
+from admin_ui import run_admin_panel
 from auth_ui import show_auth
 from recognition_ui import run_recognition, run_admin
 
@@ -11,7 +13,7 @@ def main():
         return
     # 登录后
     if is_admin:
-        run_admin(username)
+        run_admin_panel(username)
     else:
         run_recognition(username)
 
