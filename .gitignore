@@ -22,49 +22,35 @@ share/python-wheels/
 *.egg
 MANIFEST
 
-# Virtual environments
-venv/
-env/
-ENV/
-env.bak/
-venv.bak/
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Streamlit
-.streamlit/
-
-# Database files
-*.db
-*.sqlite
-*.sqlite3
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
 users.db
+users.db-journal
 
-# Model files (if large)
-*.hdf5
-*.h5
-*.pkl
-*.model
-
-# User uploaded files and generated content
-faces_database/
-failed_faces/
-uploads/
-
-# Environment variables
+# 环境变量文件
 .env
+*.env
 .env.local
 .env.production
 
-# Logs
-*.log
-logs/
+# 虚拟环境
+venv/
+env/
+ENV/
+.venv/
 
-# OS generated files
+# IDE 文件
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.spyderproject
+.spyproject
+
+# 操作系统文件
 .DS_Store
 .DS_Store?
 ._*
@@ -72,15 +58,34 @@ logs/
 .Trashes
 ehthumbs.db
 Thumbs.db
+Desktop.ini
 
-# Temporary files
+# AI 模型文件 (通常较大，不适合版本控制)
+*.hdf5
+*.h5
+*.model
+*.pkl
+*.joblib
+
+# 人脸数据库和图片文件
+faces_database/
+failed_faces/
+media/
+uploads/
+
+# 静态文件收集目录
+staticfiles/
+static/
+
+# 日志文件
+*.log
+logs/
+
+# 临时文件
 *.tmp
 *.temp
 temp/
-
-# Cache
-.cache/
-.pytest_cache/
+tmp/
 
 # Jupyter Notebook
 .ipynb_checkpoints
@@ -88,7 +93,33 @@ temp/
 # pyenv
 .python-version
 
-# Backup files
-*.bak
-*.backup
-*.old
+# pipenv
+Pipfile.lock
+
+# Poetry
+poetry.lock
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Streamlit
+.streamlit/

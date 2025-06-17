@@ -15,7 +15,13 @@ SECRET_KEY = 'django-insecure-your-secret-key' # 请替换为真实的密钥
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '0.0.0.0',
+    # 添加具体的IP地址或域名
+    '*',  # 开发环境可以使用，生产环境建议指定具体域名
+]
 
 
 # Application definition
@@ -132,29 +138,103 @@ FAILED_DIR_PATH = os.path.join(BASE_DIR, "failed_faces")
 # 创建 FAILED_DIR
 os.makedirs(FAILED_DIR_PATH, exist_ok=True)
 
-# REST_FRAMEWORK = { # 如果使用 DRF
-# 'DEFAULT_AUTHENTICATION_CLASSES': [
-# 'rest_framework.authentication.SessionAuthentication',
-# 'rest_framework.authentication.TokenAuthentication',
-#     ]
-# }
+# 简化缓存配置，避免复杂依赖
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    }
+}
+
+# 跨域和跨设备部署配置
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '0.0.0.0',
+    # 添加具体的IP地址或域名
+    '*',  # 开发环境可以使用，生产环境建议指定具体域名
+]
+
+# CORS配置 (如果使用django-cors-headers)
+CORS_ALLOW_ALL_ORIGINS = True  # 开发环境
+# 生产环境建议使用:
+# CORS_ALLOWED_ORIGINS = [
+#     "http://192.168.1.101:8501",  # 前端地址
+#     "https://your-frontend-domain.com",
+# ]
+
+# 会话配置 - 跨域支持
+SESSION_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SECURE = False  # 开发环境，HTTPS时设为True
+CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SECURE = False
+
+# 文件上传配置
+FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10MB
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10MB
+
+# 网络和超时配置
+CONN_MAX_AGE = 600  # 数据库连接复用
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# 添加健康检查配置
+HEALTH_CHECK_URL = '/health/'
+
+# 日志配置 - 减少不必要的输出
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+            'level': 'INFO',
+        },
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': 'django.log',
+            'formatter': 'verbose',
+            'level': 'WARNING',
         },
     },
     'root': {
         'handlers': ['console'],
-        'level': 'INFO',
+        'level': 'WARNING',
     },
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'django.utils.autoreload': {
+            'handlers': [],
+            'level': 'WARNING',  # 减少文件监控日志
+            'propagate': False,
+        },
+        'django.server': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'api': {
+            'handlers': ['console'],
+            'level': 'INFO',
             'propagate': False,
         },
     },
 }
+
+# 开发服务器设置
+if DEBUG:
+    # 减少文件监控的冗余输出
+    USE_TZ = True

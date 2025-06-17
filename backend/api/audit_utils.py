@@ -2,9 +2,11 @@
 
 import sqlite3
 from datetime import datetime
-from db_utils import is_admin_user
+from django.conf import settings
+from .db_utils import is_admin_user
 
-DB_PATH = "users.db"
+# 使用Django配置的数据库路径
+DB_PATH = settings.DATABASES['default']['NAME']
 
 def get_db_connection():
     return sqlite3.connect(DB_PATH, check_same_thread=False)

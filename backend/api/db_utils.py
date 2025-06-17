@@ -2,8 +2,11 @@
 
 import sqlite3
 import hashlib
+from django.conf import settings
+import os
 
-DB_PATH = "users.db"
+# 使用Django配置的数据库路径
+DB_PATH = settings.DATABASES['default']['NAME']
 
 def get_db_connection():
     return sqlite3.connect(DB_PATH, check_same_thread=False)

@@ -1,0 +1,21 @@
+# Backend dependencies only
+django>=4.0,<5.0
+requests>=2.25.0,<3.0.0
+Pillow>=9.0.0,<11.0.0
+
+# Machine Learning and Computer Vision
+numpy>=1.21.0,<1.25.0
+tensorflow>=2.10.0,<2.13.0
+opencv-python>=4.6.0,<5.0.0
+deepface>=0.0.75,<0.0.80
+h5py>=3.7.0,<3.11.0
+
+# Additional dependencies
+cffi>=1.14
+sortedcontainers
+typing-extensions>=4.6.0
+python-dotenv>=0.19.0
+
+# Build tools
+setuptools>=50.0.0
+wheel>=0.36.0
