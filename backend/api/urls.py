@@ -23,4 +23,5 @@ urlpatterns = [
     path('alert_logs/', views.alert_logs_api, name='alert_logs'),
     path('create_admin/', views.create_admin_api, name='create_admin'),
     path('delete_user/', views.delete_user, name='delete_user'),
+    path('log_operation/', views.log_operation_api, name='log_operation'),  # 新增
 ]

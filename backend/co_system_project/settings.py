@@ -145,31 +145,6 @@ CACHES = {
     }
 }
 
-# 跨域和跨设备部署配置
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    '0.0.0.0',
-    # 添加具体的IP地址或域名
-    '*',  # 开发环境可以使用，生产环境建议指定具体域名
-]
-
-# CORS配置 (如果使用django-cors-headers)
-CORS_ALLOW_ALL_ORIGINS = True  # 开发环境
-# 生产环境建议使用:
-# CORS_ALLOWED_ORIGINS = [
-#     "http://192.168.1.101:8501",  # 前端地址
-#     "https://your-frontend-domain.com",
-# ]
-
-# CORS设置
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8501",
-    "http://127.0.0.1:8501",
-]
-
 # 会话设置
 SESSION_COOKIE_AGE = 86400  # 24小时
 SESSION_SAVE_EVERY_REQUEST = True
