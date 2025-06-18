@@ -82,3 +82,33 @@ def is_admin_user(username: str) -> bool:
     row = cursor.fetchone()
     conn.close()
     return bool(row and row[0] == 1)
+
+def delete_user_from_db(username):
+    """从数据库删除用户"""
+    try:
+        conn = sqlite3.connect(os.path.join(BASE_DIR, 'users.db'))
+        cursor = conn.cursor()
+        
+        # 检查用户是否存在
+        cursor.execute('SELECT id FROM users WHERE username = ?', (username,))
+        user = cursor.fetchone()
+        
+        if not user:
+            return False
+        
+        # 删除用户记录
+        cursor.execute('DELETE FROM users WHERE username = ?', (username,))
+        
+        # 删除用户的人脸图片文件
+        user_face_path = os.path.join(BASE_DIR, 'faces_database', f'{username}.jpg')
+        if os.path.exists(user_face_path):
+            os.remove(user_face_path)
+        
+        conn.commit()
+        conn.close()
+        
+        return True
+        
+    except Exception as e:
+        print(f"删除用户失败: {e}")
+        return False

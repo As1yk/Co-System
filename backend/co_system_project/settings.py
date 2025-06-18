@@ -162,11 +162,28 @@ CORS_ALLOW_ALL_ORIGINS = True  # 开发环境
 #     "https://your-frontend-domain.com",
 # ]
 
-# 会话配置 - 跨域支持
+# CORS设置
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8501",
+    "http://127.0.0.1:8501",
+]
+
+# 会话设置
+SESSION_COOKIE_AGE = 86400  # 24小时
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_COOKIE_SECURE = False  # 开发环境设为False
+SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'
-SESSION_COOKIE_SECURE = False  # 开发环境，HTTPS时设为True
+
+# CSRF设置
+CSRF_COOKIE_SECURE = False  # 开发环境设为False
 CSRF_COOKIE_SAMESITE = 'Lax'
-CSRF_COOKIE_SECURE = False
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8501",
+    "http://127.0.0.1:8501",
+]
 
 # 文件上传配置
 FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10MB

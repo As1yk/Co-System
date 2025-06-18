@@ -426,3 +426,52 @@ def create_admin_api(request):
     else:
         return JsonResponse({'status': 'error', 'message': 'Method not allowed'}, status=405)
 
+@csrf_exempt
+def delete_user(request):
+    """删除用户"""
+    if request.method == 'DELETE':
+        try:
+            data = json.loads(request.body)
+            username = data.get('username')
+            
+            if not username:
+                return JsonResponse({'success': False, 'message': '用户名不能为空'})
+            
+            # 删除用户 - 无需登录验证
+            try:
+                user = User.objects.get(username=username)
+                user.delete()
+                
+                # 删除用户的人脸图片文件
+                import os
+                from django.conf import settings
+                user_face_path = os.path.join(settings.BASE_DIR, 'faces_database', f'{username}.jpg')
+                if os.path.exists(user_face_path):
+                    os.remove(user_face_path)
+                
+                # 记录审计日志（如果有当前用户的话）
+                try:
+                    if request.user.is_authenticated:
+                        add_audit_log_entry(
+                            request.user,
+                            'DELETE_USER',
+                            'ADMIN',
+                            'SUCCESS',
+                            1.0,
+                            f'删除用户: {username}'
+                        )
+                except Exception as audit_error:
+                    print(f"审计日志记录失败: {audit_error}")
+                
+                return JsonResponse({'success': True, 'message': '用户删除成功'})
+                
+            except User.DoesNotExist:
+                return JsonResponse({'success': False, 'message': '用户不存在'})
+                
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'message': '无效的JSON数据'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': f'删除用户失败: {str(e)}'})
+    else:
+        return JsonResponse({'success': False, 'message': 'Method not allowed'}, status=405)
+
